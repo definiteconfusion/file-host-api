@@ -1,7 +1,6 @@
-import random
-import sqlite3
-import json
 from config import details
+import sqlite3
+import random
 
 
 class sql:
