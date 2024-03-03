@@ -1,5 +1,3 @@
-import os
-
 def details():
     detail = {
         "network":{
@@ -7,7 +5,6 @@ def details():
             "port":"3000"
         },
         "database": "/Users/jakerase/Desktop/file-host-api/Data/files.db",
-        "content":"/Users/jakerase/Desktop/file-host-api/Content",
-        "headerDirectory": os.getcwd()
+        "content":"/Users/jakerase/Desktop/file-host-api/Content"
     }
     return detail

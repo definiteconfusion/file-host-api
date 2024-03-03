@@ -5,5 +5,3 @@ class httpResponses:
         return {"code":400,"response":"Bad Request"}
     def fourhundredthree():
         return {"code":403,"response":"Unauthorized"}
-    def fivehundred():
-        return {"code":500,"response":"Internal Server Error"}

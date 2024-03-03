@@ -1,51 +1,48 @@
 from flask import Flask, request
+from auth import privateAuth, requestAuth
 import functions
-import datetime
 import structs
 import config 
-import os
+
 
 app = Flask(__name__)
 
-@app.route("/api/post", methods=["POST"])
-def post():
-    urlconfig = request.args.get("cfg")
-    if urlconfig:
-        cfg = True
-    else:
-        cfg = False
-    if 'file' not in request.files:
-        return structs.httpResponses.fourhundred()
-    file = request.files['file']
+@app.route("/")
+def home():
+    return "Home"
 
-    if file.filename == '':
-        return structs.httpResponses.fourhundred()
-    fileExtension = (file.filename).split(".")[1]
-    fileId = functions.idGen()
-    currTime = datetime.datetime.now()
-    file.save(os.path.join(config.details()["content"], f"{fileId}.{fileExtension}"))
-    functions.sql.cmd(f"INSERT INTO userData (filename, fileid, filextension, lastmodified) VALUES ('{(file.filename).split('.')[0]}', '{fileId}', '{(file.filename).split('.')[1]}', '{currTime}')")
-    if cfg == True:
-        try:
-            print(eval(urlconfig))
-            return structs.httpResponses.twohundred()
-        except Exception as err:
-            print(err)  
-            return str(err)
-    else:
-        return {
-            "fileId":fileId,
-            "fileName":file.filename,
-            "dateTime":currTime
-        }
+@app.route("/api/commit", methods=["GET", "POST"])
+def apiCommit():
+    # Gathers Header Object
+    headerContent = request.headers
     
-@app.route("/api/sync", methods=["GET"])
-def sync():
-    urlconfig = eval(request.args.get("cfg"))
+    # Gathers File Object
+    file = request.files['file']
+    
+    # Validates Auth Creds: If they dont exist or are otherwise incorrect the connection is severed without a response
+    privateAuth(headerContent["token"])
+    
+    # Gathers User Ipv4 Adress for Storage
+    if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+        ipv4 = request.environ['REMOTE_ADDR']
+    else:
+        ipv4 = request.environ['HTTP_X_FORWARDED_FOR'] # if behind a proxy
+    
+    # Data Condensation
+    fileDetails = {
+        "fileName":headerContent["fileName"],
+        "fileExtension":headerContent["fileExtension"],
+        "fileId": functions.idGen(),
+        "fileIp":ipv4
+    }
+    # Validates File Request: Checks for sqlinjection attack vectors by screening for special chars (ie. "\", "%", "SELECT", etc)
+    if requestAuth(fileDetails) != True:
+        return structs.httpResponses.fourhundred()
+    # Saves File to Disk & Saves File Details to DB
     try:
-        sqlRes = functions.sql.cmd(f"SELECT fileId, lastmodified FROM userData WHERE fileId = '{urlconfig['fileId']}'")
-        return sqlRes
-    except Exception as e:
-        # return structs.httpResponses.fourhundred()
-        return str(e)
+        functions.contentWrite(file, fileDetails, False)
+        return structs.httpResponses.twohundred()
+    except:
+        return structs.httpResponses.fivehundred()
+    
 app.run(host=config.details()["network"]["host"], port=config.details()["network"]["port"])

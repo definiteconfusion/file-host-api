@@ -1,2 +1,9 @@
-config = "{'hello':'world'}"
-print(eval(config))
+import sys
+
+def test():
+    return sys.exit() 
+def gys():
+    test()
+    print("no work")
+
+gys()

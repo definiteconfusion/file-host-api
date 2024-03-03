@@ -1,7 +1,9 @@
 from config import details
+import datetime
 import sqlite3
+import structs
 import random
-
+import os
 
 class sql:
     def cmd(command:str) -> str:
@@ -24,3 +26,24 @@ def idGen():
     for idchars in range(10):
         neoid = neoid + chars[random.randint(0, 14)]
     return neoid
+
+def fileRead(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            file_content = file.read()
+        return file_content
+    except FileNotFoundError:
+        print(f"File '{file_path}' not found.")
+        return None
+    
+def contentWrite(file, fileDetails, iscdn):
+    if iscdn != True:
+        savePath = os.path.join(details()['content'], "API/", f"{fileDetails['fileId']}.{fileDetails['fileExtension']}")
+    else:
+        savePath = os.path.join(details()['content'], "CDN/", f"{fileDetails['fileId']}.{fileDetails['fileExtension']}")
+    try:    
+        currTime = datetime.datetime.now()
+        file.save(savePath)
+        sql.cmd(f"INSERT INTO privateUserData (filename, fileid, filextension, lastmodified, fileIp) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}')")
+    except Exception as e:
+        print(e)
