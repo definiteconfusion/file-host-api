@@ -1,5 +1,5 @@
-from flask import Flask, request
 from auth import privateAuth, requestAuth
+from flask import Flask, request
 import functions
 import structs
 import config 
@@ -9,10 +9,17 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Home"
+    return "Hello World"
 
-@app.route("/api/commit", methods=["GET", "POST"])
-def apiCommit():
+@app.route("/commit/<METHOD>", methods=["GET", "POST"])
+def apiCommit(METHOD):
+    # Assignes Write Method 
+    if METHOD == "api":
+        iscdn = False
+    elif METHOD == "cdn":
+        iscdn = True
+    else:
+        return structs.httpResponses.fourhundredfour()
     # Gathers Header Object
     headerContent = request.headers
     
@@ -40,7 +47,7 @@ def apiCommit():
         return structs.httpResponses.fourhundred()
     # Saves File to Disk & Saves File Details to DB
     try:
-        functions.contentWrite(file, fileDetails, False)
+        functions.contentWrite(file, fileDetails, iscdn)
         return structs.httpResponses.twohundred()
     except:
         return structs.httpResponses.fivehundred()

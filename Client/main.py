@@ -18,7 +18,9 @@ HEADER = {
 
 file_content = fileRead("/Users/jakerase/Downloads/deffcoltst.html")
 
-if file_content is not None:
-    files = {"file": file_content}
-    prin = requests.post("http://127.0.0.1:3000/api/commit", headers=HEADER, files=files).text
-    print(prin)
+rutLst = ["cdn", "api"]
+for i in range(len(rutLst)):
+    if file_content is not None:
+        files = {"file": file_content}
+        prin = requests.post(f"http://127.0.0.1:3000/commit/{rutLst[i]}", headers=HEADER, files=files).text
+        print(prin)

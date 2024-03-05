@@ -44,6 +44,9 @@ def contentWrite(file, fileDetails, iscdn):
     try:    
         currTime = datetime.datetime.now()
         file.save(savePath)
-        sql.cmd(f"INSERT INTO privateUserData (filename, fileid, filextension, lastmodified, fileIp) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}')")
+        if iscdn != True:
+            sql.cmd(f"INSERT INTO privateUserData (filename, fileid, filextension, lastmodified, fileIp) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}')")
+        else:
+            sql.cmd(f"INSERT INTO publicUserData (filename, fileid, filextension, lastmodified, fileIp) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}')")
     except Exception as e:
         print(e)
