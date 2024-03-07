@@ -45,8 +45,20 @@ def contentWrite(file, fileDetails, iscdn):
         currTime = datetime.datetime.now()
         file.save(savePath)
         if iscdn != True:
-            sql.cmd(f"INSERT INTO privateUserData (filename, fileid, filextension, lastmodified, fileIp) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}')")
+            sql.cmd(f"INSERT INTO privateUserData (filename, fileid, filextension, lastmodified, fileIp, userId) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}', '{fileDetails['userId']}')")
         else:
-            sql.cmd(f"INSERT INTO publicUserData (filename, fileid, filextension, lastmodified, fileIp) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}')")
+            sql.cmd(f"INSERT INTO publicUserData (filename, fileid, filextension, lastmodified, fileIp, userId) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}', '{fileDetails['userId']}')")
     except Exception as e:
         print(e)
+        
+def contentRead(fileDetails, iscdn):
+    # try:
+        if iscdn != True:
+            neoFileDetails = sql.cmd(f"SELECT fileId, filextension FROM privateUserData WHERE userId = '{fileDetails['token']}' AND filename = '{fileDetails['fileName']}'")[0]
+            content = fileRead(f"{details()['content']}/API/{neoFileDetails[0]}.{neoFileDetails[1]}")
+        else:
+            neoFileDetails = sql.cmd(f"SELECT fileId, filextension FROM publicUserData WHERE userId = '{fileDetails['token']}' AND filename = '{fileDetails['fileName']}'")[0]
+            content = fileRead(f"{details()['content']}/CDN/{neoFileDetails[0]}.{neoFileDetails[1]}")
+        return content
+    # except Exception as e:
+    #     return "e"
