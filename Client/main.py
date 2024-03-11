@@ -39,4 +39,4 @@ def fileRead(file_path):
 
 # print(requests.get("http://127.0.0.1:3000/user/register?email=recTest@gmail.com").text)
 # print(requests.get("http://127.0.0.1:3000/user/recovery?email=recTest@gmail.com").text)
-print(requests.get('http://127.0.0.1:3000/user/verify?token=6bbe33312e9f77342c11').text)
+print(requests.get('https://5k4z3m1r-3000.use.devtunnels.ms/user/verify?token=6bbe33312e9f77342c11').text)

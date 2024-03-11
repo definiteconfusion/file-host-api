@@ -6,6 +6,8 @@ import config
 
 app = Flask(__name__)
 
+app.debug = True
+
 @app.route("/")
 def home():
     return "Hello World"
@@ -58,7 +60,7 @@ def apiPull(METHOD):
     # Route Protection 
     if METHOD != "cdn" and METHOD != "api":
         return structs.httpResponses.fourhundredfour()
-    # Validates Auth Creds: If they dont exist or are otherwise incorrect the connection is severed without a response
+    # Validates Auth Creds: If they don't exist or are otherwise incorrect the connection is severed without a response
     try:
         # Gathers Header Object
         headerContent = request.headers
