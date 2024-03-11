@@ -1,5 +1,4 @@
 import functions
-import structs
 import sys
 
 def privateAuth(authToken:str):
