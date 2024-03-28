@@ -104,4 +104,64 @@ def user(METHOD):
     except:
         return structs.httpResponses.fivehundred()
 
+@app.route("/git/commit/<METHOD>", methods=["GET", "POST"])
+def gitCommit(METHOD):
+    if METHOD != "gitcdn" and METHOD != "gitapi":
+        return structs.httpResponses.fourhundredfour()
+    # Validates Auth Creds: If they don't exist or are otherwise incorrect the connection is severed without a response
+    try:
+        # Gathers Header Object
+        headerContent = request.headers
+        privateAuth(headerContent["token"])
+    except:
+        structs.httpResponses.fivehundred()
+    try:
+        file = request.files['file']
+    except:
+        return structs.httpResponses.fivehundred()
+
+    # Gathers User Ipv4 Address for Storage
+    if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+        ipv4 = request.environ['REMOTE_ADDR']
+    else:
+        ipv4 = request.environ['HTTP_X_FORWARDED_FOR'] # if behind a proxy
+
+    # Data Condensation
+    fileDetails = {
+        "fileName":headerContent["fileName"],
+        "fileExtension":headerContent["fileExtension"],
+        "fileId": functions.idGen(),
+        "fileIp":ipv4,
+        "userId": headerContent["token"]
+    }
+    # Validates File Request: Checks for sqlinjection attack vectors by screening for special chars (ie. "\", "%", "SELECT", etc)
+    if requestAuth(fileDetails) != True:
+        return structs.httpResponses.fourhundred()
+    # Saves File to Disk & Saves File Details to DB
+    try:
+        functions.contentWrite(file, fileDetails, METHOD)
+        return structs.httpResponses.twohundred()
+    except:
+        return structs.httpResponses.fivehundred()
+
+@app.route("/git/pull/<METHOD>", methods=["GET"])
+def gitPull(METHOD):
+    # Route Protection
+    if METHOD != "gitcdn" and METHOD != "gitapi":
+        return structs.httpResponses.fourhundredfour()
+    # Validates Auth Creds: If they don't exist or are otherwise incorrect the connection is severed without a response
+    try:
+        # Gathers Header Object
+        headerContent = request.headers
+        privateAuth(headerContent["token"])
+    except:
+        structs.httpResponses.fivehundred()
+    # File Return
+    fileContent = functions.contentRead(headerContent, METHOD)
+    if METHOD == "gitcdn":
+        retContent = {"fileContent":fileContent, "fileConfig":functions.sql.cmd(f"SELECT filename, filextension FROM gitPublicUserData WHERE userId = '{headerContent['token']}' AND filename = '{headerContent['fileName']}'")[0]}
+    else:
+        retContent = {"fileContent":fileContent, "fileConfig":functions.sql.cmd(f"SELECT filename, filextension FROM gitPrivateUserData WHERE userId = '{headerContent['token']}' AND filename = '{headerContent['fileName']}'")[0]}
+    return retContent
+
 app.run(host=config.details()["network"]["host"], port=config.details()["network"]["port"])

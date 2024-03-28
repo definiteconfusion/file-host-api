@@ -8,6 +8,10 @@ def details():
         "database": "/Users/jakerase/Desktop/file-host-api/Data/files.db",
         "content":"/Users/jakerase/Desktop/file-host-api/Content",
         "plugins":"/Users/jakerase/Desktop/file-host-api/Plugins",
-        "headerDirectory": os.getcwd()
+        "headerDirectory": os.getcwd(),
+        "smtp_creds":{
+            "origin_addr":"definiteconfusioncg@gmail.com",
+            "2fa_passkey":"ekbmohooumnxhxhe"
+        }
     }
     return detail
