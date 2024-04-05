@@ -1,9 +1,9 @@
 from config import details
+from timeout_decorator import timeout
 import datetime
 import sqlite3
 import smtplib
 import random
-import etext
 import ssl
 import os
 
@@ -93,10 +93,11 @@ def send_via_email(
         email.login(sender_email, email_password)
         email.sendmail(sender_email, receiver_email, email_message)
 
-
+@timeout(10)
 def email(email:str, token:str):
     sender_credentials = (details()["smtp_creds"]["origin_addr"],details()["smtp_creds"]["2fa_passkey"])
-    send_via_email(email,
+    try:
+        send_via_email(email,
                          f"""
                          \nYour Recovery API Call Looks Like This 
                          \n
@@ -116,5 +117,6 @@ def email(email:str, token:str):
                         \n$response = file_get_contents($url);
                         \necho $response;
                         \n?>
-    """, sender_credentials,
-                         "File Host Api Account Recovery")
+    """, sender_credentials,"File Host Api Account Recovery")
+    except TimeoutError:
+        return False

@@ -9,3 +9,5 @@ class httpResponses:
         return {"code":404,"response":"Not Found"}
     def fivehundred():
         return {"code":500,"response":"Internal Server Error"}
+    def fourhundredeight():
+        return {"code": 408, "response": "Request Timeout"}

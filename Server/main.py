@@ -1,5 +1,6 @@
 from auth import privateAuth, requestAuth
 from flask import Flask, request
+from timeout_decorator import timeout
 import functions
 import structs
 import config
@@ -91,7 +92,8 @@ def user(METHOD):
             try:
                 userToken = str(functions.sql.cmd(f"SELECT userToken FROM users WHERE recEmail = '{email}'")[0][0])
                 recToken = functions.idGen(20)
-                functions.email(email, recToken)
+                if functions.email(email, recToken) == False:
+                    return structs.httpResponses.fourhundredeight()
                 functions.sql.cmd(f"INSERT INTO activeVerifTokens (verifToken, userToken) VALUES ('{recToken}', '{userToken}')")
                 return structs.httpResponses.twohundred()
             except Exception as e:
