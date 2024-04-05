@@ -11,7 +11,7 @@
 
 ## Included Dependencies [Python 3.11]
 - Flask
-- Etext
+- Timeout_decorator
 
 ## Contributers
 - Jake Rase

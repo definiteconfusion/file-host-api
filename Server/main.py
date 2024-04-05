@@ -1,6 +1,5 @@
 from auth import privateAuth, requestAuth
 from flask import Flask, request
-from timeout_decorator import timeout
 import functions
 import structs
 import config
