@@ -35,7 +35,7 @@ class synthDetails:
 
     @staticmethod
     def header_dir():
-        dir = os.getcwd()
-        header_dir = dir.replace(f"/{synthDetails.pack_name()}", "") + '/'
+        currDir = os.getcwd()
+        header_dir = currDir.replace(f"/{synthDetails.pack_name()}", "") + '/'
         return header_dir
 print(synthDetails.header_dir())

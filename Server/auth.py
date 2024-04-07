@@ -3,12 +3,12 @@ import sys
 
 def privateAuth(authToken:str):
     try:
-        if functions.sql.cmd(f"SELECT userId FROM users WHERE userToken = '{authToken}'") != []:
+        if functions.sql.cmd(f"SELECT userId FROM users WHERE userToken = '{authToken}'"):
             return True
         else:
             return sys.exit()
     
-    except Exception as err:
+    except:
         return sys.exit()
 
 def requestAuth(fileDetails:dict):
