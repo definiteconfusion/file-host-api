@@ -1,24 +1,9 @@
-class httpResponses:
-    @staticmethod
-    def twohundred():
-        return {"code":200,"response":"OK"}
-
-    @staticmethod
-    def fourhundred():
-        return {"code":400,"response":"Bad Request"}
-
-    @staticmethod
-    def fourhundredthree():
-        return {"code":403,"response":"Unauthorized"}
-
-    @staticmethod
-    def fourhundredfour():
-        return {"code":404,"response":"Not Found"}
-
-    @staticmethod
-    def fivehundred():
-        return {"code":500,"response":"Internal Server Error"}
-
-    @staticmethod
-    def fourhundredeight():
-        return {"code": 408, "response": "Request Timeout"}
+def HTTP(code:int) -> dict:
+    codes = {
+        "200":{"code": 200, "response": "OK"},
+        "400":{"code":400,"response":"Bad Request"},
+        "403":{"code":403,"response":"Unauthorized"},
+        "404":{"code":404,"response":"Not Found"},
+        "408":{"code": 408, "response": "Request Timeout"}
+    }
+    return codes[str(code)]

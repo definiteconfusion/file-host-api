@@ -28,6 +28,18 @@ def idGen(length:int=10):
     for idchars in range(length):
         neoid = neoid + chars[random.randint(0, 14)]
     return neoid
+def userIdGen(email:str):
+    supportedChars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "o", "p", "q", "r", "s", "t", "u", "w", "x", "y", "z", "@"]
+    randFluf = ""
+    addrConv = ""
+    for randGen in range(randint(0, 20)):
+        randFluf += str(randint(0, 9))
+    for addrCo in range(len(email)):
+        for adlets in range(len(supportedChars)):
+            if email[addrCo] == supportedChars[adlets]:
+                addrConv += str(adlets)
+    neoToken = f"a{randFluf}{addrConv}"
+    return neoToken
 
 def fileRead(file_path):
     try:

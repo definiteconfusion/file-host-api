@@ -18,19 +18,19 @@ def home():
 def apiCommit(METHOD):
     # Route Protection 
     if METHOD != "cdn" and METHOD != "api":
-        return structs.httpResponses.fourhundredfour()
+        return structs.HTTP(404)
     # Validates Auth Creds: If they don't exist or are otherwise incorrect the connection is severed without a response
     try:
         # Gathers Header Object
         headerContent = request.headers
         privateAuth(headerContent["token"])
     except:
-        return structs.httpResponses.fivehundred()
+        return structs.HTTP(500)
     # Gathers File Object
     try:
         file = request.files['file']
     except:
-        return structs.httpResponses.fivehundred()
+        return structs.HTTP(500)
 
     # Gathers User Ipv4 Address for Storage
     if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
@@ -48,27 +48,27 @@ def apiCommit(METHOD):
     }
     # Validates File Request: Checks for sqlinjection attack vectors by screening for special chars (ie. "\", "%", "SELECT", etc)
     if not requestAuth(fileDetails):
-        return structs.httpResponses.fourhundred()
+        return structs.HTTP(400)
     # Saves File to Disk & Saves File Details to DB
     try:
         functions.contentWrite(file, fileDetails, METHOD)
-        return structs.httpResponses.twohundred()
+        return structs.HTTP(200)
     except:
-        return structs.httpResponses.fivehundred()
+        return structs.HTTP(500)
 
 
 @app.route("/pull/<METHOD>", methods=["GET"])
 def apiPull(METHOD):
     # Route Protection 
     if METHOD != "cdn" and METHOD != "api":
-        return structs.httpResponses.fourhundredfour()
+        return structs.HTTP(404)
     # Validates Auth Creds: If they don't exist or are otherwise incorrect the connection is severed without a response
     try:
         # Gathers Header Object
         headerContent = request.headers
         privateAuth(headerContent["token"])
     except:
-        structs.httpResponses.fivehundred()
+        structs.HTTP(500)
     # File Return
     fileContent = functions.contentRead(headerContent, METHOD)
     if METHOD == "cdn":
@@ -88,49 +88,51 @@ def user(METHOD):
     verifToken = request.args.get("token")
     try:
         if METHOD == "register" and email:
-            initIdMethod = functions.idGen()
+            initIdMethod = functions.userIdGen(email)
             functions.sql.cmd(
                 f"INSERT INTO users (userId, userToken, recEmail) VALUES ('{initIdMethod}', '{initIdMethod}', '{email}')")
             return {
                 "token": initIdMethod,
-                "response": structs.httpResponses.twohundred()
+                "response": structs.HTTP(200)
             }
         elif METHOD == "recovery":
             try:
                 userToken = str(functions.sql.cmd(f"SELECT userToken FROM users WHERE recEmail = '{email}'")[0][0])
                 recToken = functions.idGen(20)
                 if not functions.email(email, recToken):
-                    return structs.httpResponses.fourhundredeight()
+                    return structs.HTTP(408)
                 functions.sql.cmd(
                     f"INSERT INTO activeVerifTokens (verifToken, userToken) VALUES ('{recToken}', '{userToken}')")
-                return structs.httpResponses.twohundred()
+                return structs.HTTP(200)
             except Exception as e:
                 return str(e)
         elif METHOD == "verify":
-            retToken = \
-            functions.sql.cmd(f"SELECT userToken FROM activeVerifTokens WHERE verifToken = '{verifToken}'")[0][0]
-            return retToken
+            try:
+                userToken = functions.sql.cmd(f"SELECT userToken FROM activeVerifTokens WHERE verifToken = '{verifToken}'")[0][0]
+                return userToken
+            except:
+                return structs.HTTP(404)
         else:
-            return "Ended in Else"
+            return structs.HTTP(404)
     except:
-        return structs.httpResponses.fivehundred()
+        return structs.HTTP(500)
 
 
 @app.route("/git/commit/<METHOD>", methods=["GET", "POST"])
 def gitCommit(METHOD):
     if METHOD != "gitcdn" and METHOD != "gitapi":
-        return structs.httpResponses.fourhundredfour()
+        return structs.HTTP(404)
     # Validates Auth Creds: If they don't exist or are otherwise incorrect the connection is severed without a response
     try:
         # Gathers Header Object
         headerContent = request.headers
         privateAuth(headerContent["token"])
     except:
-        structs.httpResponses.fivehundred()
+        structs.HTTP(500)
     try:
         file = request.files['file']
     except:
-        return structs.httpResponses.fivehundred()
+        return structs.HTTP(500)
 
     # Gathers User Ipv4 Address for Storage
     if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
@@ -148,27 +150,27 @@ def gitCommit(METHOD):
     }
     # Validates File Request: Checks for sqlinjection attack vectors by screening for special chars (ie. "\", "%", "SELECT", etc)
     if not requestAuth(fileDetails):
-        return structs.httpResponses.fourhundred()
+        return structs.HTTP(400)
     # Saves File to Disk & Saves File Details to DB
     try:
         functions.contentWrite(file, fileDetails, METHOD)
-        return structs.httpResponses.twohundred()
+        return structs.HTTP(200)
     except:
-        return structs.httpResponses.fivehundred()
+        return structs.HTTP(500)
 
 
 @app.route("/git/pull/<METHOD>", methods=["GET"])
 def gitPull(METHOD):
     # Route Protection
     if METHOD != "gitcdn" and METHOD != "gitapi":
-        return structs.httpResponses.fourhundredfour()
+        return structs.HTTP(404)
     # Validates Auth Creds: If they don't exist or are otherwise incorrect the connection is severed without a response
     try:
         # Gathers Header Object
         headerContent = request.headers
         privateAuth(headerContent["token"])
     except:
-        structs.httpResponses.fivehundred()
+        structs.HTTP(500)
     # File Return
     fileContent = functions.contentRead(headerContent, METHOD)
     if METHOD == "gitcdn":

@@ -1,5 +1,7 @@
 import sys
 import os
+import functions
+import yaml
 
 class basic:
     @staticmethod
@@ -7,7 +9,8 @@ class basic:
         detail = {
             ".ignore":[
                 ".js"
-            ]
+            ],
+            "setupYaml":yaml.load(functions.fileRead("./setup.yaml"), yaml.BaseLoader)
         }
         return detail
 
@@ -38,4 +41,3 @@ class synthDetails:
         currDir = os.getcwd()
         header_dir = currDir.replace(f"/{synthDetails.pack_name()}", "") + '/'
         return header_dir
-print(synthDetails.header_dir())
