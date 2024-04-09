@@ -1,21 +1,57 @@
-MIT License
+COPYRIGHT LICENSE CONTRACT
 
-Copyright (c) 2024 Daniel Rase
+This Copyright License Contract (“Contract”) is entered between Daniel Jake Rase (“Licensor”)
+and Licensee (“Licensee”).
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Grant of License:
+Licensor hereby grants to Licensee a non-exclusive, worldwide, royalty-free license to
+use, modify, reproduce, distribute, and publicly display the work described as File Host API
+(“Work”), subject to the terms and conditions set forth herein. By use of the Work, Licensee
+accepts the terms of this Contract.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Scope of Use:
+Licensee may use the Work for any purpose, commercial or non-commercial, provided
+ that the total profit generated from the distribution of the Work, in part or in whole, does not
+ exceed one million dollars ($1,000,000 USD). Any profits exceeding this limit shall require prior
+ written consent from Licensor and may be subject to additional fees or terms.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+New York Forum Choice-of-Law:
+This Contract shall be governed by and construed in accordance with the laws of the
+State of New York. Any dispute arising out of or in connection with this Contract shall be subject
+to the exclusive jurisdiction of the courts located in New York, and the parties hereby consent to
+the personal jurisdiction of such courts.
+
+Intellectual Property Rights:
+Licensor represents and warrants that they have the legal right to grant the license set
+forth herein and that the Work does not infringe upon the intellectual property rights of any third
+party. Licensee acknowledges that all intellectual property rights in the Work remain with
+Licensor. Licensee agrees not to misrepresent or attempt to pass the Work off as their own
+creation, and shall credit the Licensor appropriately in any use, modification, reproduction,
+distribution, or public display of the Work. Licensee shall indemnify and hold Licensor harmless
+from and against any and all claims of infringement of copyright by any third party regarding the Work.
+
+Termination:
+Either party may terminate this Contract upon written notice to the other party if the other party
+materially breaches any provision of this Contract and fails to remedy such breach within thirty (30)
+days of receiving written notice thereof. Failure to strictly adhere to the terms of this Contract vacate
+the Contract and immediately terminates Licensee’s authority to use the Work.
+
+Rescission:
+In the event that Licensee breaches any term of this Contract, Licensor reserves the right to rescind
+this License immediately upon notice to Licensee. Licensor alone shall determine breach that results in
+rescission. Upon rescission, Licensee shall immediately cease all use, modification, reproduction,
+distribution, and public display of the Work, and shall promptly return or destroy all copies of the Work in
+their possession or control. Rescission of this License shall not relieve Licensee of any obligations accrued
+prior to the effective date of rescission.
+
+Entire Agreement:
+This Contract constitutes the entire agreement between the parties concerning the subject matter hereof
+and supersedes all prior and contemporaneous agreements and understandings, whether written or oral. Any
+amendments or modifications to this Contract shall not be valid unless made in writing and signed by both parties.
+
+Severability:
+In the event that any one or more of the provisions of this Contract are determined by a court of competent
+jurisdiction to be invalid, void, unenforceable, or illegal, the remaining provisions of this Contract shall
+continue to be in full force and effect.
+
+
