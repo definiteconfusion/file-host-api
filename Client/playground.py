@@ -11,28 +11,29 @@ def fileRead(file_path):
         return None
     
 def contentWrite(filec, fileDetails):
-    savePath = str(os.getcwd()) + "/Desktop/file-host-api/Client/" + f"{fileDetails[0]}.{fileDetails[1]}"
+    savePath = str(os.getcwd()) + f"{fileDetails[0]}.{fileDetails[1]}"
+    print(savePath)
     with open(savePath, 'w') as file:
         file.write(filec)
 
 HEADER = {
-    "token":"gu",
+    "token":"922b89ddbd",
     "fileName": "deffcoltst",
     "fileExtension":"html"
 }
 #
-# file_content = fileRead("/Users/jakerase/Downloads/deffcoltst.html")
+file_content = fileRead("/Users/jakerase/Downloads/deffcoltst.html")
 # #
-# rutLst = ["gitcdn"]
+# rutLst = ["api"]
 # for i in range(len(rutLst)):
 #     if file_content is not None:
 #         files = {"file": file_content}
-#         prin = requests.post(f"http://127.0.0.1:3000/git/commit/{rutLst[i]}", headers=HEADER, files=files).text
+#         prin = requests.post(f"http://127.0.0.1:3000/commit/{rutLst[i]}", headers=HEADER, files=files).text
 #         print(prin)
 
-rutLst = ["gitcdn"]
+rutLst = ["api"]
 for i in range(len(rutLst)):
-    prin = eval(requests.get(f"http://127.0.0.1:3000/git/pull/{rutLst[i]}", headers=HEADER).text)
+    prin = eval(requests.get(f"http://127.0.0.1:3000/pull/{rutLst[i]}", headers=HEADER).text)
     print(prin)
     fileContent = prin["fileContent"]
     fileConfig = prin["fileConfig"]

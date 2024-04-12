@@ -1,6 +1,8 @@
 from auth import privateAuth, requestAuth
+from analytics import serverUtils
 from flask import Flask, request
 import functions
+import analytics
 import structs
 import config
 
@@ -16,6 +18,7 @@ def home():
 
 @app.route("/commit/<METHOD>", methods=["GET", "POST"])
 def apiCommit(METHOD):
+    timeCache = serverUtils.startTime() # TIME START -- -- -- -- -->
     # Route Protection 
     if METHOD != "cdn" and METHOD != "api":
         return structs.HTTP(404)
@@ -50,25 +53,39 @@ def apiCommit(METHOD):
     if not requestAuth(fileDetails):
         return structs.HTTP(400)
     # Saves File to Disk & Saves File Details to DB
+    processTime = serverUtils.endTime(timeCache) # TIME END -- -- -- -- -->
+    fileSize = len(str(file).encode('utf-8')) # FILE SIZE MARKER -- -- -- -- -->
     try:
+        spdTest = serverUtils.startTime() # SPEED START
         functions.contentWrite(file, fileDetails, METHOD)
+        uploadTime = serverUtils.endTime(spdTest) # SPEED END -- -- -- -- -->
+        fileSpeed = (fileSize / uploadTime.total_seconds()) # SPEED CALC -- -- -- -- -->
+        analytics.databaseEntry(headerContent["token"], processTime, fileSpeed, ipv4) # ANALYTICS ENTRY -- -- -- -- -->
         return structs.HTTP(200)
-    except:
-        return structs.HTTP(500)
+    except Exception as e:
+        # return structs.HTTP(500)
+        return str(e)
 
 
 @app.route("/pull/<METHOD>", methods=["GET"])
 def apiPull(METHOD):
+    timeCache = serverUtils.startTime()  # TIME START -- -- -- -- -->
     # Route Protection 
     if METHOD != "cdn" and METHOD != "api":
         return structs.HTTP(404)
     # Validates Auth Creds: If they don't exist or are otherwise incorrect the connection is severed without a response
     try:
+        # Gathers User Ipv4 Address for Storage
+        if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+            ipv4 = request.environ['REMOTE_ADDR']
+        else:
+            ipv4 = request.environ['HTTP_X_FORWARDED_FOR']  # if behind a proxy
         # Gathers Header Object
         headerContent = request.headers
         privateAuth(headerContent["token"])
     except:
-        structs.HTTP(500)
+        return structs.HTTP(500)
+    processTime = serverUtils.endTime(timeCache)  # TIME END -- -- -- -- -->
     # File Return
     fileContent = functions.contentRead(headerContent, METHOD)
     if METHOD == "cdn":
@@ -79,6 +96,7 @@ def apiPull(METHOD):
         retContent = {"fileContent": fileContent, "fileConfig": functions.sql.cmd(
             f"SELECT filename, filextension FROM privateUserData WHERE userId = '{headerContent['token']}' AND filename = '{headerContent['fileName']}'")[
             0]}
+    analytics.databaseEntry(headerContent["token"], processTime, None, ipv4)  # ANALYTICS ENTRY -- -- -- -- -->
     return retContent
 
 
@@ -120,6 +138,7 @@ def user(METHOD):
 
 @app.route("/git/commit/<METHOD>", methods=["GET", "POST"])
 def gitCommit(METHOD):
+    timeCache = serverUtils.startTime()  # TIME START -- -- -- -- -->
     if METHOD != "gitcdn" and METHOD != "gitapi":
         return structs.HTTP(404)
     # Validates Auth Creds: If they don't exist or are otherwise incorrect the connection is severed without a response
@@ -152,8 +171,14 @@ def gitCommit(METHOD):
     if not requestAuth(fileDetails):
         return structs.HTTP(400)
     # Saves File to Disk & Saves File Details to DB
+    processTime = serverUtils.endTime(timeCache)  # TIME END -- -- -- -- -->
+    fileSize = len(str(file).encode('utf-8'))  # FILE SIZE MARKER -- -- -- -- -->
     try:
+        spdTest = serverUtils.startTime()  # SPEED START
         functions.contentWrite(file, fileDetails, METHOD)
+        uploadTime = serverUtils.endTime(spdTest)  # SPEED END -- -- -- -- -->
+        fileSpeed = (fileSize / uploadTime.total_seconds())  # SPEED CALC -- -- -- -- -->
+        analytics.databaseEntry(headerContent["token"], processTime, fileSpeed, ipv4)  # ANALYTICS ENTRY -- -- -- -- -->
         return structs.HTTP(200)
     except:
         return structs.HTTP(500)
@@ -161,16 +186,23 @@ def gitCommit(METHOD):
 
 @app.route("/git/pull/<METHOD>", methods=["GET"])
 def gitPull(METHOD):
+    timeCache = serverUtils.startTime()  # TIME START -- -- -- -- -->
     # Route Protection
     if METHOD != "gitcdn" and METHOD != "gitapi":
         return structs.HTTP(404)
     # Validates Auth Creds: If they don't exist or are otherwise incorrect the connection is severed without a response
     try:
+        # Gathers User Ipv4 Address for Storage
+        if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+            ipv4 = request.environ['REMOTE_ADDR']
+        else:
+            ipv4 = request.environ['HTTP_X_FORWARDED_FOR']  # if behind a proxy
         # Gathers Header Object
         headerContent = request.headers
         privateAuth(headerContent["token"])
     except:
         structs.HTTP(500)
+    processTime = serverUtils.endTime(timeCache)  # TIME END -- -- -- -- -->
     # File Return
     fileContent = functions.contentRead(headerContent, METHOD)
     if METHOD == "gitcdn":
@@ -181,6 +213,7 @@ def gitPull(METHOD):
         retContent = {"fileContent": fileContent, "fileConfig": functions.sql.cmd(
             f"SELECT filename, filextension FROM gitPrivateUserData WHERE userId = '{headerContent['token']}' AND filename = '{headerContent['fileName']}'")[
             0]}
+    analytics.databaseEntry(headerContent["token"], processTime, None, ipv4)  # ANALYTICS ENTRY -- -- -- -- -->
     return retContent
 
 
