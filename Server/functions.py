@@ -8,6 +8,7 @@ import ssl
 import os
 
 class sql:
+    @staticmethod
     def cmd(command:str) -> str:
         database = details()["database"]
         init = sqlite3.connect(f'{database}')
@@ -32,8 +33,8 @@ def userIdGen(email:str):
     supportedChars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "o", "p", "q", "r", "s", "t", "u", "w", "x", "y", "z", "@"]
     randFluf = ""
     addrConv = ""
-    for randGen in range(randint(0, 20)):
-        randFluf += str(randint(0, 9))
+    for randGen in range(random.randint(0, 20)):
+        randFluf += str(random.randint(0, 9))
     for addrCo in range(len(email)):
         for adlets in range(len(supportedChars)):
             if email[addrCo] == supportedChars[adlets]:
@@ -50,29 +51,8 @@ def fileRead(file_path):
         print(f"File '{file_path}' not found.")
         return None
     
-def contentWrite(file, fileDetails, iscdn):
-    if iscdn == "api":
-        savePath = os.path.join(details()['content'], "API/", f"{fileDetails['fileId']}.{fileDetails['fileExtension']}")
-    elif iscdn == "cdn":
-        savePath = os.path.join(details()['content'], "CDN/", f"{fileDetails['fileId']}.{fileDetails['fileExtension']}")
-    elif iscdn == "gitapi":
-        savePath = os.path.join(details()['content'], "GITAPI/", f"{fileDetails['fileId']}.{fileDetails['fileExtension']}")
-    else:
-        savePath = os.path.join(details()['content'], "GITCDN/", f"{fileDetails['fileId']}.{fileDetails['fileExtension']}")
-
-    try:    
-        currTime = datetime.datetime.now()
-        file.save(savePath)
-        if iscdn == "api":
-            sql.cmd(f"INSERT INTO privateUserData (filename, fileid, filextension, lastmodified, fileIp, userId) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}', '{fileDetails['userId']}')")
-        elif iscdn == "cdn":
-            sql.cmd(f"INSERT INTO publicUserData (filename, fileid, filextension, lastmodified, fileIp, userId) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}', '{fileDetails['userId']}')")
-        elif iscdn == "gitapi":
-            sql.cmd(f"INSERT INTO gitPublicUserData (filename, fileid, filextension, lastmodified, fileIp, userId) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}', '{fileDetails['userId']}')")
-        else:
-            sql.cmd(f"INSERT INTO gitPublicUserData (filename, fileid, filextension, lastmodified, fileIp, userId) VALUES ('{(fileDetails['fileName'])}', '{fileDetails['fileId']}', '{fileDetails['fileExtension']}', '{currTime}', '{fileDetails['fileIp']}', '{fileDetails['userId']}')")
-    except Exception as e:
-        print(e)
+def contentWrite(fileDetails, requestType):
+    sql.cmd(f"INSERT INTO files (filename, fileextension, fileid, fileip, userid, filecontent, requesttype) VALUES ({fileDetails['filename']}, {fileDetails['fileextension']}, {fileDetails['fileid']}, {fileDetails['fileip']}, {fileDetails['userid']}, {fileDetails['filecontent']}, {requestType})")
         
 def contentRead(fileDetails, iscdn):
     try:

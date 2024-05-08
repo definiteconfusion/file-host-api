@@ -43,11 +43,13 @@ def apiCommit(METHOD):
 
     # Data Condensation
     fileDetails = {
-        "fileName": headerContent["fileName"],
-        "fileExtension": headerContent["fileExtension"],
-        "fileId": functions.idGen(),
-        "fileIp": ipv4,
-        "userId": headerContent["token"]
+        "filename": headerContent["fileName"],
+        "fileextension": headerContent["fileExtension"],
+        "fileid": functions.idGen(),
+        "fileip": ipv4,
+        "userid": headerContent["token"],
+        "filecontent":headerContent["headerContent"],
+        "requesttype": f"{METHOD}commit"
     }
     # Validates File Request: Checks for sqlinjection attack vectors by screening for special chars (ie. "\", "%", "SELECT", etc)
     if not requestAuth(fileDetails):
@@ -57,7 +59,7 @@ def apiCommit(METHOD):
     fileSize = len(str(file).encode('utf-8')) # FILE SIZE MARKER -- -- -- -- -->
     try:
         spdTest = serverUtils.startTime() # SPEED START
-        functions.contentWrite(file, fileDetails, METHOD)
+        functions.contentWrite(fileDetails, METHOD)
         uploadTime = serverUtils.endTime(spdTest) # SPEED END -- -- -- -- -->
         fileSpeed = (fileSize / uploadTime.total_seconds()) # SPEED CALC -- -- -- -- -->
         analytics.databaseEntry(headerContent["token"], processTime, fileSpeed, ipv4) # ANALYTICS ENTRY -- -- -- -- -->

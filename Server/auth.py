@@ -34,6 +34,8 @@ def requestAuth(fileDetails:dict):
         "CREATE"
     ]
     for key in fileDetails:
+        if key == "filecontent":
+            continue
         for chars in range(len(screenedChars)):
             if screenedChars[chars] in fileDetails[key]:
                 return False
